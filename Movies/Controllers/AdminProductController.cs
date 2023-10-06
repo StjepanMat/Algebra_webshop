@@ -135,6 +135,28 @@ namespace Movies.Controllers
             return View(product);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> editCategory(int id)
+        {
+            List<Category> categories = _context.Category.ToList();
+            foreach(var cat in categories)
+            {
+                var checkbox = Request.Form[cat.Title];
+                if (checkbox.Contains("true"))
+                {
+                    if(_context.ProductCategory.FirstOrDefault(x=>x.CategoryId == cat.Id && x.ProductId == id) == null)
+                        _context.ProductCategory.Add(new ProductCategory() { CategoryId=cat.Id,ProductId=id});
+                }
+                else
+                {
+                    var p = _context.ProductCategory.FirstOrDefault(x => x.CategoryId == cat.Id && x.ProductId == id);
+                    if (p != null) _context.ProductCategory.Remove(p);
+                }
+            }
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Edit),new { id });
+        }
+
         // GET: AdminProduct/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
