@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Movies.Data;
-//proba
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -52,4 +52,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
-//probix
+
