@@ -23,7 +23,7 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-
+                Categories
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Active)
@@ -69,7 +69,6 @@
             <td>
                     @foreach(var category in item.ProductCategories)
                     {
-
                         var cat = (ViewBag.Categories as List<Category>).FirstOrDefault(x=>x.Id==category.CategoryId);
                             <span>@cat.Title</span><br />
                     }
