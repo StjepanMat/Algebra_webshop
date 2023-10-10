@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Movies.Data;
 using Movies.Models;
 using System.Diagnostics;
 
@@ -8,9 +9,13 @@ namespace Movies.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
+
         }
 
         public IActionResult Index()
@@ -22,6 +27,20 @@ namespace Movies.Controllers
         {
             return View();
         }
+
+        public IActionResult Product(int? categoryID)
+        {
+            List<Product> products = _context.Product.ToList();
+
+            if (categoryID != null)
+            {
+                //TODO: Filter products by category
+            }
+
+            ViewBag.Categories = _context.Category.ToList();
+            return View(products);
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
