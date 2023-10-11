@@ -51,8 +51,27 @@
                             <img class="card-img" src="~/images/noimage.png" alt="@item.Title" />
                         }
                     }
+                    <table class="table table-condensed table-hover">
+                        <thead>
+                            <tr>
+                                <th> Price </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> @item.Price €</td>
+                                <td>
+                                    <form>
+                                        <input type="submit" class="btn btn-success btn-sm" value="Add to cart">
+                                    </form>
+                                </td>
+                           </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
+        <br/>
+      </div>
     }
 </div>
