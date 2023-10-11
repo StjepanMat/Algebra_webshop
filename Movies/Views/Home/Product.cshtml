@@ -28,9 +28,13 @@
 
 <div class="row mt-3">
     @foreach (var item in Model) {
-        <div>
-        
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text">@item.Description</p>
+                </div>
+            </div>
         </div>
-
     }
 </div>
