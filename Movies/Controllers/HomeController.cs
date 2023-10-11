@@ -8,7 +8,6 @@ namespace Movies.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
         private readonly ApplicationDbContext _context;
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
@@ -32,21 +31,20 @@ namespace Movies.Controllers
         {
             List<Product> products = _context.Product.ToList();
 
-            if (categoryID != null)
-            {
-                //TODO: Filter products by category
-            }
-
             foreach (var product in products)
             {
                 product.ProductImages = _context.ProductImage.Where(pi => pi.ProductId == product.Id).ToList();
                 product.ProductCategories = _context.ProductCategory.Where(pc => pc.ProductId == product.Id).ToList();
             }
 
+            if (categoryID != null)
+            {
+                products = products.Where(p => p.ProductCategories.Any(p => p.CategoryId==categoryID)).ToList();
+            }
+            
             ViewBag.Categories = _context.Category.ToList();
             return View(products);
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
