@@ -24,15 +24,17 @@ namespace Movies.Controllers
         // GET: AdminProduct
         public async Task<IActionResult> Index()
         {
-            if(_context.Product == null)
+            if (_context.Product == null)
                 return Problem("Entity set 'ApplicationDbContext.Product'  is null.");
             var products = await _context.Product.ToListAsync();
             foreach (var product in products)
             {
                 product.ProductImages = _context.ProductImage.Where(pi => pi.ProductId == product.Id).ToList();
+                product.ProductCategories = _context.ProductCategory.Where(pc => pc.ProductId == product.Id).ToList();
             }
+            ViewBag.Categories = _context.Category.ToList();
             return View(products);
-                          
+
         }
 
         // GET: AdminProduct/Details/5
@@ -136,16 +138,16 @@ namespace Movies.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> editCategory(int id)
+        public async Task<IActionResult> EditCategory(int id)
         {
             List<Category> categories = _context.Category.ToList();
-            foreach(var cat in categories)
+            foreach (var cat in categories)
             {
                 var checkbox = Request.Form[cat.Title];
                 if (checkbox.Contains("true"))
                 {
-                    if(_context.ProductCategory.FirstOrDefault(x=>x.CategoryId == cat.Id && x.ProductId == id) == null)
-                        _context.ProductCategory.Add(new ProductCategory() { CategoryId=cat.Id,ProductId=id});
+                    if (_context.ProductCategory.FirstOrDefault(x => x.CategoryId == cat.Id && x.ProductId == id) == null)
+                        _context.ProductCategory.Add(new ProductCategory() { CategoryId = cat.Id, ProductId = id });
                 }
                 else
                 {
@@ -153,8 +155,8 @@ namespace Movies.Controllers
                     if (p != null) _context.ProductCategory.Remove(p);
                 }
             }
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Edit),new { id });
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Edit), new { id });
         }
 
         // GET: AdminProduct/Delete/5
@@ -187,17 +189,17 @@ namespace Movies.Controllers
             var product = await _context.Product.FindAsync(id);
             if (product != null)
             {
-                _context.ProductImage.RemoveRange(_context.ProductImage.Where(pc => pc.ProductId  == product.Id));
+                _context.ProductImage.RemoveRange(_context.ProductImage.Where(pc => pc.ProductId == product.Id));
                 _context.Product.Remove(product);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(int id)
         {
-          return (_context.Product?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Product?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
