@@ -33,6 +33,24 @@
                 <div class="card-body">
                     <h5 class="card-title">@item.Title</h5>
                     <p class="card-text">@item.Description</p>
+                    @{
+                        try
+                        {
+                            var image = item.ProductImages.FirstOrDefault(x => x.IsMainImage == true);
+                            if (image != null)
+                            {
+                                <img class="card-img" src="@image.FileName" alt="@item.Title" />
+                            }
+                            else
+                            {
+                                <img class="card-img" src="~/images/noimage.png" alt="@item.Title" />
+                            }
+                        }
+                        catch
+                        {
+                            <img class="card-img" src="~/images/noimage.png" alt="@item.Title" />
+                        }
+                    }
                 </div>
             </div>
         </div>
