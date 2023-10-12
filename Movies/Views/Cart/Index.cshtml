@@ -13,5 +13,39 @@
 }
 else
 {
-    
+    <div class="text-center">
+        <h1 class="display-4">Cart Items</h1>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>
+                        <form method="post" asp-controller="Cart" asp-action="RemoveFromCart">
+                            <input type="hidden" name="ProductId" value="@item.Product.Id"/>
+                            <input type="submit" class="btn btn-danger btn-sm" value="Remove"/>
+                        </form>
+                    </td>
+                    <td>@item.Product.Title</td>
+                    <td>@item.Product.Price.ToString("0.00") €</td>
+                    <td>@item.Quantity</td>
+                    <td>@((item.Product.Price * item.Quantity).ToString("0.00")) €</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="4" class="text-right">Total:</td>
+                <td>@Model.Sum(x => x.Product.Price * x.Quantity).ToString("0.00") €</td>
+            </tr>
+        </tbody>
+    </table>
 }
