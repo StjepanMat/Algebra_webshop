@@ -26,7 +26,7 @@ namespace Movies.Controllers
                 total += item.getTotal();
             }
             ViewBag.CartTotal = total;
-            return View();
+            return View(cart);
         }
     }
 }
