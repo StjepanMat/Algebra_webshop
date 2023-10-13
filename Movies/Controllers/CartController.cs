@@ -30,6 +30,22 @@ namespace Movies.Controllers
         }
 
         [HttpPost]
+        public IActionResult ChangeCartItemQuantity(int productId, decimal quantity)
+        {
+            List<CartItem> cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>(SessionKeyName);
+            foreach (CartItem item in cart)
+            {
+                if(item.Product.Id == productId)
+                {
+                    item.Quantity = quantity;
+                    break;
+                }
+            }
+            HttpContext.Session.SetObjectAsJson(SessionKeyName, cart);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
         public IActionResult AddToCart(int productId)
         {
             List<CartItem> cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>(SessionKeyName);
