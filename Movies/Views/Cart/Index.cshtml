@@ -21,6 +21,7 @@ else
             <tr>
                 <th></th>
                 <th>Product</th>
+                <th></th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
@@ -37,6 +38,26 @@ else
                         </form>
                     </td>
                     <td>@item.Product.Title</td>
+                    <td>
+                        @{
+                            try
+                            {
+                                var image = item.Product.ProductImages.FirstOrDefault(x => x.IsMainImage == true);
+                                if(image != null)
+                                {
+                                    <img height="100px" src="@image.FileName" alt="@item.Product.Title"/>
+                                }
+                                else
+                                {
+                                    <img height="100px" src="~/images/noimage.png" alt="@item.Product.Title" />
+                                }
+                            }
+                            catch 
+                            {
+                                <img height="100px" src="~/images/noimage.png" alt="@item.Product.Title" />
+                            }
+                        }
+                    </td>
                     <td>@item.Product.Price.ToString("0.00") €</td>
                     <td>
                         @* @item.Quantity *@
@@ -50,7 +71,7 @@ else
                 </tr>
             }
             <tr>
-                <td colspan="4" class="text-right">Total:</td>
+                <td colspan="5" class="text-right">Total:</td>
                 <td>@Model.Sum(x => x.Product.Price * x.Quantity).ToString("0.00") €</td>
             </tr>
         </tbody>

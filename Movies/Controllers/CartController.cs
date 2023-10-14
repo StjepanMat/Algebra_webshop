@@ -23,6 +23,7 @@ namespace Movies.Controllers
             decimal total = 0;
             foreach (CartItem item in cart)
             {
+                item.Product.ProductImages=_context.ProductImage.Where(pi=>pi.ProductId==item.Product.Id).ToList();
                 total += item.getTotal();
             }
             ViewBag.CartTotal = total;
