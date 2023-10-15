@@ -27,9 +27,17 @@ namespace Movies.Controllers
             return View();
         }
 
-        public IActionResult Product(int? categoryID)
+        public IActionResult Product(int? id, int? categoryID)
         {
             List<Product> products = _context.Product.ToList();
+
+            if (id != null)
+            {
+                var product = products.Where(p => p.Id == id).FirstOrDefault();
+                product.ProductImages= _context.ProductImage.Where(pi=>pi.ProductId==product.Id).ToList();
+                product.ProductCategories=_context.ProductCategory.Where(pc=>pc.ProductId==product.Id).ToList();
+                return View("ProductDetails", product);
+            }
 
             foreach (var product in products)
             {
