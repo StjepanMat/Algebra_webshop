@@ -37,8 +37,14 @@ else
                             <input type="submit" class="btn btn-danger btn-sm" value="Remove"/>
                         </form>
                     </td>
-                    <td>@item.Product.Title</td>
                     <td>
+                        <a asp-controller="Home" asp-action="Product" asp-route-id="@item.Product.Id"
+                                style="text-decoration:none;color:inherit">
+                            @item.Product.Title
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-controller="Home" asp-action="Product" asp-route-id="@item.Product.Id">
                         @{
                             try
                             {
@@ -57,6 +63,7 @@ else
                                 <img height="100px" src="~/images/noimage.png" alt="@item.Product.Title" />
                             }
                         }
+                        </a>
                     </td>
                     <td>@item.Product.Price.ToString("0.00") €</td>
                     <td>
