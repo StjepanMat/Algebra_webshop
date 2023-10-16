@@ -87,6 +87,23 @@
 
         </div>
     </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="text-center">
+                <h5>Personal information</h5>
+            </div>
+            @if (ViewBag.Errors.Count > 0)
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    @foreach (var item in ViewBag.Errors)
+                    {
+                        <p>@item</p>
+                    }
+                </div>
+            }
+        </div>
+    </div>
 </div>
 
 
