@@ -105,6 +105,58 @@ namespace Movies.Controllers
             return View(cart);
         }
 
+        [HttpPost]
+        public IActionResult CreateOrder(Order order, bool shippingsameaspersonal)
+        {
+            List<CartItem> cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>(SessionKeyName);
+            if(cart == null)
+            {
+                return RedirectToAction("Index");
+            }
+            if(cart.Count == 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var errors = new List<string>();
+
+            for (int i = 0; i < cart.Count; i++)
+            {
+                var product = _context.Product.Find(cart[i].Product.Id);
+                if (product == null)
+                {
+                    cart.RemoveAt(i);
+                    i--;
+                    errors.Add("Product not found and was removed from cart!");
+                    continue;
+                }
+                if (product.Quantity < cart[i].Quantity)
+                {
+                    cart[i].Quantity = product.Quantity;
+                    errors.Add("Product quantity was reduced to available quantity!");
+                }
+                if (!product.Active)
+                {
+                    cart.RemoveAt(i);
+                    i--;
+                    errors.Add("Product is not active and was removed from cart!");
+                    continue;
+                }
+            }
+            HttpContext.Session.SetObjectAsJson(SessionKeyName, cart);
+            if(errors.Count > 0)
+            {
+                return RedirectToAction("Order", new { errors });
+            }
+
+            if(ModelState.IsValid)
+            {
+                //TODO: Save order to database order
+            }
+
+            return RedirectToAction("Order", new { errors });
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
