@@ -103,6 +103,7 @@
                 <div class="text-center">
                     <h5>Personal (billing) information</h5>
                 </div>
+                <input type="hidden" name="UserId" value="user" />
                 <input type="hidden" name="Total" value="@Model.Sum(x => x.Product.Price * x.Quantity).ToString("0.00")" />
                 <div class="row">
                     <div class="form-group col-md-6">
