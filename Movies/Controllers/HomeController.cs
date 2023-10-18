@@ -27,9 +27,9 @@ namespace Movies.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? message)
         {
-            return View();
+            return View("Index",message);
         }
 
         public IActionResult Privacy()
@@ -115,7 +115,7 @@ namespace Movies.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult CreateOrder(Order order, bool shippingsameaspersonal)
+        public IActionResult CreateOrder(Order order, string shippingsameaspersonal)
         {
             List<CartItem> cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>(SessionKeyName);
             if(cart == null)
@@ -159,7 +159,7 @@ namespace Movies.Controllers
                 return RedirectToAction("Order", new { errors = errors });
             }
 
-            if (shippingsameaspersonal)
+            if (shippingsameaspersonal=="on")
             {
                 order.ShippingFirstName = order.BillingFirstName;
                 order.ShippingLastName = order.BillingLastName;
@@ -176,6 +176,7 @@ namespace Movies.Controllers
             
             ModelState.Remove("Id");
             ModelState.Remove("OrderItems");
+            ModelState.Remove("shippingsameaspersonal");
             if(ModelState.IsValid)
             {
                 _context.Order.Add(order);
@@ -194,6 +195,7 @@ namespace Movies.Controllers
                     };
 
                     _context.OrderItem.Add(order_item);
+                    _context.Product.Find(item.Product.Id).Quantity -= item.Quantity;
                     _context.SaveChanges();
                 }
 
