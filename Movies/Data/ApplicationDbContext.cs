@@ -47,5 +47,40 @@ namespace Movies.Data
         public DbSet<Category> Category { get; set; }
         public DbSet<ProductCategory> ProductCategory { get; set; }
         public DbSet<OrderItem> OrderItem { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>().HasData(new Product
+            {
+                Id = 50,
+                Title = "Rambo",
+                Description = "Description",
+                Price = 10.99m,
+                Active = true,
+                Quantity = 10
+            });
+
+            modelBuilder.Entity<Product>().HasData(new Product
+            {
+                Id = 51,
+                Title = "Rambo 2",
+                Description = "Description 2",
+                Price = 13.99m,
+                Active = true,
+                Quantity = 8
+            });
+
+            modelBuilder.Entity<Product>().HasData(new Product
+            {
+                Id = 52,
+                Title = "Rambo 3",
+                Description = "Description 3",
+                Price = 15.99m,
+                Active = true,
+                Quantity = 12
+            });
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
