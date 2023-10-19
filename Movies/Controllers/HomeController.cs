@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Movies.Data;
 using Movies.Extensions;
 using Movies.Models;
@@ -17,7 +18,6 @@ namespace Movies.Controllers
         private readonly ApplicationDbContext _context;
 
         private readonly UserManager<ApplicationUser> _userManager;
-
         public HomeController(ILogger<HomeController> logger,
                                     ApplicationDbContext context,
                                     UserManager<ApplicationUser> userManager)
@@ -92,11 +92,18 @@ namespace Movies.Controllers
                     cart[i].Quantity = product.Quantity;
                     errors.Add("Product quantity was reduced to available quantity!");
                 }
+                if(product.Quantity == 0)
+                {
+                    cart.RemoveAt(i);
+                    i--;
+                    errors.Add("Product "+ product.Title +" is out of stock and is removed from cart!");
+                    continue;
+                }
                 if(!product.Active)
                 {
                     cart.RemoveAt(i);
                     i--;
-                    errors.Add("Product is not active and was removed from cart!");
+                    errors.Add("Product "+ product.Title +" is not active and was removed from cart!");
                     continue;
                 }
             }
@@ -120,11 +127,11 @@ namespace Movies.Controllers
             List<CartItem> cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>(SessionKeyName);
             if(cart == null)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new {Message="Cart is empty, so no order can be completed."});
             }
             if(cart.Count == 0)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { Message = "Cart is empty, so no order can be completed."});
             }
 
             var errors = new List<string>();
@@ -143,6 +150,13 @@ namespace Movies.Controllers
                 {
                     cart[i].Quantity = product.Quantity;
                     errors.Add("Product quantity was reduced to available quantity!");
+                }
+                if (product.Quantity == 0)
+                {
+                    cart.RemoveAt(i);
+                    i--;
+                    errors.Add("Product " + product.Title + " is out of stock and is removed from cart!");
+                    continue;
                 }
                 if (!product.Active)
                 {
