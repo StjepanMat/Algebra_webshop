@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Movies.Data;
 using Movies.Models;
@@ -43,16 +44,25 @@ namespace Movies.Controllers
             {
                 return NotFound();
             }
+            order.OrderItems = (
+                from order_item in _context.OrderItem
+                where order_item.OrderId == order.Id
+                select new OrderItem
+                {
+                    Id = order_item.Id,
+                    OrderId = order_item.OrderId,
+                    ProductId = order_item.ProductId,
+                    Quantity = order_item.Quantity,
+                    Price = order_item.Price,
+                    ProductTitle=(from product in _context.Product
+                                  where product.Id == order_item.ProductId
+                                  select product.Title).FirstOrDefault()
+                }
+                ).ToList();
 
             return View(order);
         }
-
-        // GET: AdminOrder/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
+        
         // POST: AdminOrder/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
