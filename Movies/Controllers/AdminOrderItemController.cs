@@ -94,6 +94,9 @@ namespace Movies.Controllers
             {
                 return NotFound();
             }
+            orderItem.ProductTitle = (from product in _context.Product
+                                      where product.Id == orderItem.ProductId
+                                      select product.Title).FirstOrDefault();
             return View(orderItem);
         }
 
@@ -129,6 +132,9 @@ namespace Movies.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            orderItem.ProductTitle = (from product in _context.Product
+                                      where product.Id == orderItem.ProductId
+                                      select product.Title).FirstOrDefault();
             return View(orderItem);
         }
 

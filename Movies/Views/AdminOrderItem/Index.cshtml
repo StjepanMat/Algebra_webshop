@@ -7,6 +7,9 @@
 <h1>Order Items for order no.@Model.First().OrderId</h1>
 
 <p>
+    <a asp-action="Edit" asp-controller="AdminOrder" asp-route-id="@Model.First().OrderId">Back to order edit</a>
+</p>
+<p>
     <a asp-action="Create">Add to order</a>
 </p>
 <table class="table">
@@ -58,6 +61,7 @@
     <td>
         @Model.Sum(x=> x.Price * x.Quantity).ToString("0.00") €
     </td>
+    <td></td>
 </tr>
     </tbody>
 </table>
