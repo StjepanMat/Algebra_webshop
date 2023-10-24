@@ -111,12 +111,49 @@ namespace Movies.Controllers
             {
                 return NotFound();
             }
-
+            if(orderItem.Price<=0)
+            {
+                ModelState.AddModelError("Price", "Price must ge greater than 0");
+            }
+            if(orderItem.Quantity<=0)
+            {
+                ModelState.AddModelError("Quantity", "Quantity must be greater than 0");
+            }
+            ModelState.Remove("ProductTitle");
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(orderItem);
+                    var old_orderItem = await _context.OrderItem.FindAsync(id);
+                    var quantity_diff = orderItem.Quantity - old_orderItem.Quantity;
+                    var price_diff = orderItem.Price - old_orderItem.Price;
+                    if (quantity_diff < 0)
+                    {
+                        _context.Product.Find(orderItem.ProductId).Quantity += Math.Abs(quantity_diff);
+                    }
+                    if (quantity_diff > 0)
+                    {
+                        var available_quantity = _context.Product.Find(orderItem.ProductId).Quantity;
+                        if (available_quantity < quantity_diff)
+                        {
+                            ModelState.AddModelError("Quantity", $"Only {available_quantity} items are available," +
+                                $" you tried to add {quantity_diff}");
+                            orderItem.ProductTitle = (from product in _context.Product
+                                                      where product.Id == orderItem.ProductId
+                                                      select product.Title).FirstOrDefault();
+                            return View(orderItem);
+                        }
+                        _context.Product.Find(orderItem.ProductId).Quantity -= quantity_diff;
+                    }
+                    if (price_diff != 0)
+                    {
+                        var old_price = old_orderItem.Price * old_orderItem.Quantity;
+                        var new_price = orderItem.Price * orderItem.Quantity;
+                        _context.Order.Find(orderItem.OrderId).Total += new_price - old_price
+                    }
+                    old_orderItem.Quantity = orderItem.Quantity;
+                    old_orderItem.Price = orderItem.Price;
+                    //_context.Update(orderItem);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -130,7 +167,7 @@ namespace Movies.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new {id=orderItem.OrderId});
             }
             orderItem.ProductTitle = (from product in _context.Product
                                       where product.Id == orderItem.ProductId
