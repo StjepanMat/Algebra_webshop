@@ -13,10 +13,16 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.ProductTitle)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Quantity)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                Total item price:
             </th>
             <th></th>
         </tr>
@@ -25,10 +31,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.ProductTitle)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Quantity)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @((item.Price*item.Quantity).ToString("0.00")) €
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -37,5 +49,15 @@
             </td>
         </tr>
 }
+<tr>
+    <td></td>
+    <td></td>
+    <td>
+        <b>Total:</b>
+    </td>
+    <td>
+        @Model.Sum(x=> x.Price * x.Quantity).ToString("0.00") €
+    </td>
+</tr>
     </tbody>
 </table>

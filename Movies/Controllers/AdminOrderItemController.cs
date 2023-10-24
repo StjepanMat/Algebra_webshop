@@ -29,6 +29,12 @@ namespace Movies.Controllers
                 return RedirectToAction("Index","AdminOrder");
             }
             var orderItems = await _context.OrderItem.Where(o=>o.OrderId==id).ToListAsync();
+            foreach (var item in orderItems)
+            {
+                item.ProductTitle = (from product in _context.Product
+                                     where product.Id == item.ProductId
+                                     select product.Title).FirstOrDefault();
+            }
             return View(orderItems);
         }
 
