@@ -7,7 +7,7 @@
 <h1>Edit</h1>
 
 <h4>Order no.@Model.Id</h4>
-<h5>created on @Model.DateCreated.ToString("yyyy-MM-dd")</h5>
+<h5>Created on @Model.DateCreated.ToString("yyyy-MM-dd")</h5>
 <hr />
 <div class="row">
         <form asp-action="Edit">
@@ -19,14 +19,14 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope ="col"><label asp-for="BillingFirstName" class="control-label"></label></th>
+                        <th scope="col"><label asp-for="BillingFirstName" class="control-label"></label></th>
                         <th scope="col"><label asp-for="BillingLastName" class="control-label"></label></th>
                         <th scope="col"><label asp-for="BillingEmail" class="control-label"></label></th>
                         <th scope="col"><label asp-for="BillingPhone" class="control-label"></label></th>
                         <th scope="col"><label asp-for="BillingAddress" class="control-label"></label></th>
                         <th scope="col"><label asp-for="BillingCity" class="control-label"></label></th>
-                        <th scope="col"> <label asp-for="BillingPostalCode" class="control-label"></label></th>
-                        <th scope="col"> <label asp-for="BillingCountry" class="control-label"></label></th>
+                        <th scope="col"><label asp-for="BillingPostalCode" class="control-label"></label></th>
+                        <th scope="col"><label asp-for="BillingCountry" class="control-label"></label></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,7 +115,7 @@
             </table>
             <div class="form-group">
                 <label asp-for="Message" class="control-label"></label>
-                <textarea asp-for="Message" class="form-control" rows="5"></textarea>
+                <textarea asp-for="Message" class="form-control" rows="5" ></textarea>
                 <span asp-validation-for="Message" class="text-danger"></span>
             </div>
 
@@ -123,9 +123,10 @@
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
-
+    <hr/>
+    <a asp-action="Index" asp-controller="AdminOrderItem" asp-route-id="@Model.Id">Edit order items</a>
+    <partial name="_OrderItemsPartial" for="@Model.OrderItems" />
 </div>
-
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
