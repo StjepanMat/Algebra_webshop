@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Order Items for order no.@Model.First().OrderId</h1>
+<h1>Order Items for order no.@ViewContext.RouteData.Values["id"]</h1>
 
 <p>
-    <a asp-action="Edit" asp-controller="AdminOrder" asp-route-id="@Model.First().OrderId">Back to order edit</a>
+    <a asp-action="Edit" asp-controller="AdminOrder" asp-route-id="@ViewContext.RouteData.Values["id"]">Back to order edit</a>
 </p>
 <p>
     <a asp-action="Create">Add to order</a>

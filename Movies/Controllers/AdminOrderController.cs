@@ -134,7 +134,7 @@ namespace Movies.Controllers
             {
                 return NotFound();
             }
-
+            order.OrderItems = ItemsForOrder((int)id);
             return View(order);
         }
 
@@ -150,6 +150,11 @@ namespace Movies.Controllers
             var order = await _context.Order.FindAsync(id);
             if (order != null)
             {
+                foreach (var order_item in _context.OrderItem.Where(oi=>oi.OrderId == order.Id))
+                {
+                    _context.Product.Find(order_item.ProductId).Quantity += order_item.Quantity;
+                    _context.OrderItem.Remove(order_item);
+                }
                 _context.Order.Remove(order);
             }
             

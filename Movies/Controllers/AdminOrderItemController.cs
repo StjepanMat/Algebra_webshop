@@ -149,7 +149,7 @@ namespace Movies.Controllers
                     {
                         var old_price = old_orderItem.Price * old_orderItem.Quantity;
                         var new_price = orderItem.Price * orderItem.Quantity;
-                        _context.Order.Find(orderItem.OrderId).Total += new_price - old_price
+                        _context.Order.Find(orderItem.OrderId).Total += new_price - old_price;
                     }
                     old_orderItem.Quantity = orderItem.Quantity;
                     old_orderItem.Price = orderItem.Price;
@@ -189,7 +189,9 @@ namespace Movies.Controllers
             {
                 return NotFound();
             }
-
+            orderItem.ProductTitle = (from product in _context.Product
+                                      where product.Id == orderItem.ProductId
+                                      select product.Title).FirstOrDefault();
             return View(orderItem);
         }
 
@@ -203,13 +205,16 @@ namespace Movies.Controllers
                 return Problem("Entity set 'ApplicationDbContext.OrderItem'  is null.");
             }
             var orderItem = await _context.OrderItem.FindAsync(id);
+            int? orderid = orderItem.OrderId;
             if (orderItem != null)
             {
+                _context.Product.Find(orderItem.ProductId).Quantity += orderItem.Quantity;
+                _context.Order.Find(orderItem.OrderId).Total -= orderItem.Price * orderItem.Quantity;
                 _context.OrderItem.Remove(orderItem);
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new {id=orderid});
         }
 
         private bool OrderItemExists(int id)
